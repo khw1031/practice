@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon --exec ts-node src/server.ts"
+  },
+  "dependencies": {
+    "@types/nanoid": "^2.1.0",
+    "apollo-server": "^2.10.1",
+    "graphql": "^14.6.0",
+    "lowdb": "^1.0.0",
+    "nanoid": "^2.1.11"
+  },
+  "devDependencies": {
+    "@types/lowdb": "^1.0.9",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.2"
+  }
+}

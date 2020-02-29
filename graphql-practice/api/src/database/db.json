@@ -1,0 +1,51 @@
+{
+  "user": {
+    "id": "CYU4i73jQRx2fvnGrnf4w",
+    "createdAt": 1582907511522,
+    "username": "Lee"
+  },
+  "pet": [
+    {
+      "id": "1",
+      "createdAt": 1582907511522,
+      "name": "Moose",
+      "type": "DOG"
+    },
+    {
+      "id": "2",
+      "createdAt": 1582907511522,
+      "name": "Summer",
+      "type": "DOG"
+    },
+    {
+      "id": "3",
+      "createdAt": 1582907511522,
+      "name": "Daryl",
+      "type": "CAT"
+    },
+    {
+      "id": "4",
+      "createdAt": 1582907511522,
+      "name": "COKLA",
+      "type": "CAT"
+    },
+    {
+      "id": "gm8OrQYeRal7haffUaEdo",
+      "createdAt": 1582913576468,
+      "name": "Spring",
+      "type": "DOG"
+    },
+    {
+      "id": "TXIhZwEuj40xDAXSoxw8J",
+      "createdAt": 1582913684995,
+      "name": "Snap",
+      "type": "CAT"
+    },
+    {
+      "id": "_EHmOs8BouA29qB1LWN0P",
+      "createdAt": 1582915350071,
+      "name": "Snp",
+      "type": "CAT"
+    }
+  ]
+}
