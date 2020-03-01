@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/default.css" />
+    <style>
+      .flex-container {
+        display: flex;
+        height: 100vh;
+        align-items: center;
+      }
+      .flex-item {
+        background-color: palegreen;
+        border: 1px solid #000;
+      }
+      .flex-item:nth-child(2) {
+        align-self: flex-start;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div class="flex-item">A</div>
+      <div class="flex-item">B</div>
+      <div class="flex-item">C</div>
+    </div>
+    <script>
+      // align-self는 align-items 보다 우선권을 가진다
+    </script>
+  </body>
+</html>

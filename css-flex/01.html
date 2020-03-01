@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/default.css" />
+    <style>
+      .flex-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .flex-item {
+        flex: 1 auto;
+        background: palegreen;
+        border: 2px solid #000;
+      }
+      @media screen and (min-width: 600px) {
+        .flex-container {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .flex-item {
+          /* flex-basis: 50%; */
+          flex: 0 50%;
+        }
+      }
+      @media screen and (min-width: 900px) {
+        .flex-item {
+          /* flex-basis: 50%; */
+          flex: 0 33.33%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div class="flex-item">AAAAAAAAAAA</div>
+      <div class="flex-item">BBB</div>
+      <div class="flex-item">CCC</div>
+      <div class="flex-item">AAAAAAAAAAA</div>
+      <div class="flex-item">BBB</div>
+      <div class="flex-item">CCC</div>
+      <div class="flex-item">AAAAAAAAAAA</div>
+      <div class="flex-item">BBB</div>
+      <div class="flex-item">CCC</div>
+    </div>
+  </body>
+</html>

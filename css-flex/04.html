@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/default.css" />
+    <style>
+      .flex-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        /* IE 11 대응 */
+        height: 100vh;
+      }
+      .flex-item {
+        background-color: palegreen;
+        border: 1px solid #000;
+      }
+      .content {
+        flex: 1 auto;
+        padding: 1.5rem;
+        /* IE 11 대응 */
+        overflow: auto;
+      }
+      footer {
+        min-height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex-container">
+      <header class="header flex-item">header</header>
+      <section class="content">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea, facilis
+        doloribus optio ipsa ducimus voluptas sequi, dolore atque consequuntur a
+        porro ipsum sint sit qui culpa ratione minus saepe deserunt. Lorem ipsum
+        dolor sit amet consectetur adipisicing elit. Ea, facilis doloribus optio
+      </section>
+      <footer class="footer flex-item">footer</footer>
+    </div>
+  </body>
+</html>
