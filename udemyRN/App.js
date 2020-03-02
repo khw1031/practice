@@ -3,23 +3,31 @@ import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
   Button,
+  TextInput,
 } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import SafeAreaView from "react-native-safe-area-view";
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from "react-native/Libraries/NewAppScreen";
-import { TextInput } from "react-native-gesture-handler";
+// import {
+//   Header,
+//   LearnMoreLinks,
+//   Colors,
+//   DebugInstructions,
+//   ReloadInstructions,
+// } from "react-native/Libraries/NewAppScreen";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 function HomeScreen({ route, navigation }) {
   useEffect(() => {
@@ -28,14 +36,12 @@ function HomeScreen({ route, navigation }) {
       // for example, send the post to the server
       console.log(route.params.post);
     }
-  }, [route.params, route.params.post]);
+  }, [route.params]);
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#6a51ae" }]}>
+      <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
       <Text>Home Screen</Text>
-      <Button
-        title="Create post"
-        onPress={() => navigation.navigate("CreatePost")}
-      />
+      <Text style={{ color: "#fff" }}>Light Screen</Text>
       <Button
         title="Go to Details"
         onPress={() =>
@@ -53,8 +59,12 @@ function HomeScreen({ route, navigation }) {
           });
         }}
       />
+      <Button
+        title="Update the title"
+        onPress={() => navigation.setOptions({ title: "Update!" })}
+      />
       <Text style={{ margin: 10 }}>Post: {route.params?.post}</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -63,7 +73,8 @@ function DetailsScreen({ route, navigation }) {
   const { otherParam } = route.params;
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#ecf0f1" }]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ecf0f1" />
       <Text>Details Screen</Text>
       <Text>itemId: {itemId}</Text>
       <Text>otherParam: {otherParam}</Text>
@@ -81,7 +92,7 @@ function DetailsScreen({ route, navigation }) {
         title="Go back to first screen in stack"
         onPress={() => navigation.popToTop()}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -111,108 +122,23 @@ const Stack = createStackNavigator();
 
 function App() {
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator headerMode="none">
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen
             name="Details"
             component={DetailsScreen}
             initialParams={{ itemId: 42 }}
+            options={({ route }) => ({
+              title: route.params.itemId,
+            })}
           />
           <Stack.Screen name="CreatePost" component={CreatePostScreen} />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </SafeAreaProvider>
   );
 }
-
-const App2 = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: "absolute",
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: "400",
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: "700",
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: "600",
-    padding: 4,
-    paddingRight: 12,
-    textAlign: "right",
-  },
-});
 
 export default App;
