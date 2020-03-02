@@ -38,8 +38,7 @@ function HomeScreen({ route, navigation }) {
     }
   }, [route.params]);
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "#6a51ae" }]}>
-      <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
+    <View style={[styles.container]}>
       <Text>Home Screen</Text>
       <Text style={{ color: "#fff" }}>Light Screen</Text>
       <Button
@@ -64,7 +63,7 @@ function HomeScreen({ route, navigation }) {
         onPress={() => navigation.setOptions({ title: "Update!" })}
       />
       <Text style={{ margin: 10 }}>Post: {route.params?.post}</Text>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -122,22 +121,45 @@ const Stack = createStackNavigator();
 
 function App() {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator headerMode="none">
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen
-            name="Details"
-            component={DetailsScreen}
-            initialParams={{ itemId: 42 }}
-            options={({ route }) => ({
-              title: route.params.itemId,
-            })}
-          />
-          <Stack.Screen name="CreatePost" component={CreatePostScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerTitle: "Home",
+            headerStyle: {
+              backgroundColor: "#6a51ae",
+            },
+            headerTintColor: "#fff",
+            headerLeft: () => (
+              <Button
+                title="Settings"
+                color="#fff"
+                onPress={() => alert("Settings!")}
+              />
+            ),
+            headerRight: () => (
+              <Button
+                title="Info"
+                color="#fff"
+                onPress={() => alert("This is a button!")}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+          initialParams={{ itemId: 42 }}
+          options={({ route }) => ({
+            headerBackTitle: "GO HOME",
+            title: route.params.itemId,
+          })}
+        />
+        <Stack.Screen name="CreatePost" component={CreatePostScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
