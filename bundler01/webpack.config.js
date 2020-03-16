@@ -3,13 +3,17 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
-const CustomPlugin = require("./custom-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
+// const CustomPlugin = require("./custom-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: {
     main: "./src/main.js",
-    // print: "./src/print.js",
+  },
+  externals: {
+    axios: "axios",
   },
   module: {
     rules: [
@@ -25,12 +29,39 @@ module.exports = {
       },
     ],
   },
+  devServer: {
+    overlay: true,
+    hot: true,
+    compress: true,
+    before: app => {
+      app.get("/api/users", (_req, res) => {
+        res.json([
+          { id: 1, name: "Kim" },
+          { id: 2, name: "Lee" },
+          { id: 3, name: "Park" },
+          { id: 4, name: "Hong" },
+          { id: 5, name: "Chang" },
+          { id: 6, name: "Ho" },
+        ]);
+      });
+    },
+  },
   plugins: [
-    new CustomPlugin(),
+    // new CustomPlugin(),
     new CleanWebpackPlugin(),
     new ManifestPlugin(),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
+    }),
+    new HtmlWebpackExternalsPlugin({
+      externals: [
+        {
+          module: "axios",
+          entry: "dist/axios.min.js",
+          append: false,
+        },
+      ],
+      // outputPath: "vendor",
     }),
     new webpack.DefinePlugin({}),
   ],

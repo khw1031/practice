@@ -6,7 +6,7 @@ class Animal {
 }
 
 const printMe = () => {
-  console.log("PRINT_FROM_PRINTJS");
+  console.log("PRINT_FROM_PRINT");
 };
 
 export default printMe;
