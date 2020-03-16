@@ -1,3 +1,12 @@
-export default function printMe() {
-  console.log("from print.js");
+class Animal {
+  a = 1;
+  printA = () => {
+    return this.a;
+  };
 }
+
+const printMe = () => {
+  console.log("PRINT_FROM_PRINTJS");
+};
+
+export default printMe;

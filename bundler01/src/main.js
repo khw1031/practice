@@ -4,5 +4,5 @@ import "./index.css";
 printMe();
 
 document.querySelector("#app").innerHTML = `
-  <div>Hellllloo!</div>
+  <div>Hello World!</div>
 `;

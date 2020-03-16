@@ -16,7 +16,7 @@ class CustomPlugin {
             "/**",
             "* 이것은 Banner Plugin이 처리한 결과 입니다.",
             "* key: " + key,
-            "* /",
+            "*/",
           ].join("\n");
           return banner + "\n\n" + source;
         };

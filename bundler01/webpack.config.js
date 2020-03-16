@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
@@ -14,7 +15,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: [path.resolve(__dirname, "./custom-loader.js")],
+        use: ["babel-loader"],
         exclude: [/node_modules/],
       },
       {
@@ -31,6 +32,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
+    new webpack.DefinePlugin({}),
   ],
   output: {
     path: path.resolve(__dirname, "dist"),
