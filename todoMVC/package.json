@@ -1,0 +1,13 @@
+{
+  "name": "todo-mvc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "bundle-watch": "parcel watch index.html",
+    "dev": "parcel index.html"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}

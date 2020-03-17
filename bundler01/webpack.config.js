@@ -24,7 +24,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [/*'style-loader',*/ MiniCssExtractPlugin.loader, 'css-loader'],
         exclude: [/node_modules/],
       },
     ],
@@ -49,9 +49,15 @@ module.exports = {
   plugins: [
     // new CustomPlugin(),
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].bundle.css?[hash]'
+    }),
     new ManifestPlugin(),
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: './src/index.html',
+      templateParameters: {
+        env: process.env.NODE_ENV,
+      },
     }),
     new HtmlWebpackExternalsPlugin({
       externals: [
@@ -65,8 +71,4 @@ module.exports = {
     }),
     new webpack.DefinePlugin({}),
   ],
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "[name].bundle.js?[hash]",
-  },
 };
