@@ -3,6 +3,9 @@
 # Created by https://www.gitignore.io/api/visualstudiocode,reactnative,react,python,node,macos,flutter,dart,android,androidstudio,objective-c,swift,vue,vuejs,xcode
 # Edit at https://www.gitignore.io/?templates=visualstudiocode,reactnative,react,python,node,macos,flutter,dart,android,androidstudio,objective-c,swift,vue,vuejs,xcode
 
+### parcel
+.parcel-cache
+
 ### Android ###
 # Built application files
 *.apk
@@ -492,7 +495,8 @@ buck-out/
 # General
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 
