@@ -1,4 +1,5 @@
-import React from "react";
+/** @jsx jsx */
+import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Link, useLocation } from "react-router-dom";
 
@@ -10,32 +11,28 @@ const Tab = ({ href, label, hash }) => {
   );
 };
 
-const Tabs = () => {
-  const t = [
-    { href: "#1", label: "1" },
-    { href: "#2", label: "2" },
-    { href: "#3", label: "3" },
-    { href: "#4", label: "4" },
-  ];
-  const hash = useLocation().hash || t[0].href;
+const Tabs = ({ views }) => {
+  const hash = useLocation().hash || views[0].href;
   return (
     <styles.tabs>
-      {t.map(({ href, label }) => (
-        <Tab key={href} href={href} label={label} hash={hash} />
+      {views.map(props => (
+        <Tab key={props.href} hash={hash} {...props} />
       ))}
     </styles.tabs>
   );
 };
 
-const TabView = props => {
+const TabView = ({ courses }) => {
+  const hash = useLocation().hash || courses[0].href;
   return (
     <styles.div>
-      <Tabs />
+      <Tabs views={courses} />
+      <styles.content>
+        {courses.find(({ href }) => href === hash).component}
+      </styles.content>
     </styles.div>
   );
 };
-
-export default TabView;
 
 const styles = {
   div: styled.div``,
@@ -65,4 +62,9 @@ const styles = {
     padding: 1rem;
     text-decoration: none;
   `,
+  content: styled.div`
+    padding: 1rem;
+  `,
 };
+
+export default TabView;

@@ -1,5 +1,5 @@
 /**
- *
+ * @jsx jsx
  * SVG (Scalable Vector Graphics)
  * - XML 기반의 2차원 그래픽
  * - DOM의 일부로서 각 개체별로 HTML 엘리먼트가 추가됨
@@ -18,5 +18,31 @@
  * - svg 요소들을 직접 inline으로 삽입
  * - object 태그
  *
+ * 압축툴: svgomg
  *
  */
+import { jsx, css } from "@emotion/core";
+
+const Course1 = () => {
+  return (
+    <svg
+      viewBox="0 0 500 500"
+      css={css`
+        width: 500px;
+        height: 500px;
+        background: #ddd;
+        .rect01 {
+          /* background-color: red; */
+          fill: yellow;
+        }
+        @media (prefers-color-scheme: dark) {
+          background: red;
+        }
+      `}
+    >
+      <rect x="0" y="0" width="100" height="100"></rect>
+    </svg>
+  );
+};
+
+export default Course1;
