@@ -31,6 +31,13 @@ const Course2 = () => {
         stroke="green"
         strokeWidth="20"
       ></ellipse>
+      <line x1="10" x2="400" y1="30" y2="300" stroke="blue"></line>
+      <polyline points="0 0, 200 100, 150 300" stroke="blue"></polyline>
+      <polygon
+        points="50 50, 200 100, 150 300"
+        stroke="red"
+        strokeWidth="10"
+      ></polygon>
     </svg>
   );
 };

@@ -8,6 +8,7 @@ import { jsx, css } from "@emotion/core";
 const Course3 = () => {
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
       css={css`
         width: 600px;
         height: 400px;
@@ -19,18 +20,18 @@ const Course3 = () => {
         }
       `}
     >
-      <rect x="10" y="20" width="200" height="100"></rect>
-      <rect x="50" y="180" rx="10" ry="10" width="100" height="100"></rect>
-      <circle cx="300" cy="200" r="50"></circle>
-      <ellipse
-        cx="200"
-        cy="330"
-        rx="100"
-        ry="50"
-        fill="red"
+      <path
+        d="M 300 200 L 500 100 H 50 V 300 Z"
+        stroke="tomato"
+        strokeWidth="5"
+        fill="transparent"
+      ></path>
+      <path
+        d="M 100 150 C 100 15, 300 100, 500 250"
         stroke="green"
-        strokeWidth="20"
-      ></ellipse>
+        strokeWidth="5"
+        fill="transparent"
+      ></path>
     </svg>
   );
 };
