@@ -2,7 +2,7 @@
 import { jsx, css } from "@emotion/core";
 /**
  * Beware of `margin: auto;` alignment on flex items;
- *
+ * https://hyunseob.github.io/solved-by-flexbox-kr/
  *
  */
 const Flex3 = () => (
