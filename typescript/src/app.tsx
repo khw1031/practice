@@ -1,14 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Header from "components/Header";
-import { lib } from "../lib";
 
-lib();
-
-const App = () => (
-  <div>
-    <Header />
-  </div>
-);
+const App = () => {
+  const isDone: boolean = false;
+  console.log(isDone);
+  return (
+    <div>
+      <Header />
+    </div>
+  );
+};
 
 ReactDOM.render(<App />, document.getElementById("app"));
