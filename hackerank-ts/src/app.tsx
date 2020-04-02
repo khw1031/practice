@@ -21,22 +21,32 @@ type ResultType = {
   hitsPerPage?: number;
 };
 
+type ResultsType = {
+  [key: string]: ResultType;
+};
+
 type AppState = {
-  result: ResultType | null;
+  results: ResultsType | null;
+  searchKey: string;
   searchTerm: string;
 };
 
 class App extends Component<{}, AppState> {
   // https://stackoverflow.com/questions/51305171/typescript-and-react-setting-initial-state-with-empty-typed-array
   state: Readonly<AppState> = {
-    result: null,
+    results: null,
+    searchKey: "",
     searchTerm: "redux",
   };
 
   componentDidMount() {
     const { searchTerm } = this.state;
+    this.setState({ searchKey: searchTerm });
     this.fetchSearchTopstories(searchTerm);
   }
+
+  needsToSearchTopStories = (searchTerm: string) =>
+    !this.state.results![searchTerm];
 
   fetchSearchTopstories = (searchTerm: string, page: number = 0): void => {
     fetch(
@@ -49,11 +59,14 @@ class App extends Component<{}, AppState> {
 
   /** dismiss */
   onDismiss = (e: MouseEvent<HTMLButtonElement>) => {
-    const isNotId = (hit: HitType) =>
-      hit.objectID !== e.currentTarget.dataset.id;
-    const updatedHits = this.state.result!.hits.filter(isNotId);
+    const id = e.currentTarget.dataset.id;
+    const { searchKey, results } = this.state;
+    const { hits, page } = results![searchKey];
+
+    const isNotId = (hit: HitType) => hit.objectID !== id;
+    const updatedHits = hits.filter(isNotId);
     this.setState({
-      result: { ...this.state.result, hits: updatedHits },
+      results: { ...results, [searchKey]: { hits: updatedHits, page } },
     });
   };
 
@@ -65,28 +78,45 @@ class App extends Component<{}, AppState> {
   onSearchSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const { searchTerm } = this.state;
-    this.fetchSearchTopstories(searchTerm);
-    console.log(this.state.searchTerm);
+    this.setState({ searchKey: searchTerm });
+    if (this.needsToSearchTopStories(searchTerm)) {
+      this.fetchSearchTopstories(searchTerm);
+    }
   };
 
   setSearchTopstories = (result: ResultType) => {
     const { hits, page } = result;
-    const oldHits = page !== 0 ? this.state.result?.hits || [] : [];
-    this.setState({ result: { ...result, hits: [...oldHits, ...hits] } });
+    const { searchKey, results } = this.state;
+
+    const oldHits =
+      page !== 0 ? (results && results![searchKey].hits) || [] : [];
+    this.setState({
+      results: { ...results, [searchKey]: { hits: [...oldHits, ...hits] } },
+    });
   };
 
   /** fetch more */
   fetchMore = (e: MouseEvent<HTMLButtonElement>) => {
-    const { searchTerm } = this.state;
+    const { searchKey } = this.state;
     const page = e.currentTarget.dataset!.page || 0;
-    this.fetchSearchTopstories(searchTerm, (parseInt(page.toString(), 10) || 0) + 1);
+    this.fetchSearchTopstories(
+      searchKey,
+      (parseInt(page.toString(), 10) || 0) + 1
+    );
   };
 
   render() {
-    const { searchTerm, result } = this.state;
-    const page = result?.page || 0;
+    const { searchTerm, results, searchKey } = this.state;
+    const page =
+      (results && results[searchKey] && results[searchKey].page) || 0;
+    const list =
+      (results && results[searchKey] && results[searchKey].hits) || [];
     return (
-      <>
+      <div
+        css={css`
+          padding: 1rem;
+        `}
+      >
         <Global styles={globalStyles} />
         <div css={styles.wrapper}>
           <div css={styles.interactions}>
@@ -99,13 +129,13 @@ class App extends Component<{}, AppState> {
             </Search>
           </div>
         </div>
-        {result && <Table list={result.hits} onDismiss={this.onDismiss} />}
+        <Table list={list} onDismiss={this.onDismiss} />
         <div css={styles.interactions}>
           <Button data-page={page} onClick={this.fetchMore}>
             더보기
           </Button>
         </div>
-      </>
+      </div>
     );
   }
 }
