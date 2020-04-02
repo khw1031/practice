@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "components/": ["./src/components/"]
+    },
+    "moduleResolution": "node",
+    "incremental": true,
+    "target": "ES2015",
+    "lib": ["ES6", "DOM"],
+    "allowJs": true,
+    "checkJs": true,
+    "sourceMap": true,
+    "jsx": "react",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "dist",
+    // Linter Checks
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    // Advanced
+    "noEmitOnError": true
+    // "traceResolution": true
+    // "listFiles": true,
+    // "listEmittedFiles": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["**/*.spec.ts", "**/*.spec.tsx"]
+}
