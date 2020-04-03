@@ -29,20 +29,28 @@ type AppState = {
   results: ResultsType | null;
   searchKey: string;
   searchTerm: string;
+  error: Error | null;
 };
 
 class App extends Component<{}, AppState> {
   // https://stackoverflow.com/questions/51305171/typescript-and-react-setting-initial-state-with-empty-typed-array
+  _isMounted = false;
   state: Readonly<AppState> = {
     results: null,
     searchKey: "",
     searchTerm: "redux",
+    error: null,
   };
 
   componentDidMount() {
+    this._isMounted = true;
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopstories(searchTerm);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   needsToSearchTopStories = (searchTerm: string) =>
@@ -50,11 +58,11 @@ class App extends Component<{}, AppState> {
 
   fetchSearchTopstories = (searchTerm: string, page: number = 0): void => {
     fetch(
-      `https://hn.algolia.com/api/v1/search?query=${searchTerm}&page=${page}`
+      `https://hn.algolia.com/api/v1/search?query=${searchTerm}&page=${page}&hitsPerPage=100`
     )
       .then(response => response.json())
-      .then(this.setSearchTopstories)
-      .catch(e => e);
+      .then(result => this._isMounted && this.setSearchTopstories(result))
+      .catch(error => this._isMounted && this.setState({ error }));
   };
 
   /** dismiss */
@@ -89,9 +97,12 @@ class App extends Component<{}, AppState> {
     const { searchKey, results } = this.state;
 
     const oldHits =
-      page !== 0 ? (results && results![searchKey].hits) || [] : [];
+      results && results[searchKey] ? results[searchKey].hits : [];
     this.setState({
-      results: { ...results, [searchKey]: { hits: [...oldHits, ...hits] } },
+      results: {
+        ...results,
+        [searchKey]: { hits: [...oldHits, ...hits], page },
+      },
     });
   };
 
@@ -106,11 +117,14 @@ class App extends Component<{}, AppState> {
   };
 
   render() {
-    const { searchTerm, results, searchKey } = this.state;
-    const page =
-      (results && results[searchKey] && results[searchKey].page) || 0;
+    const { searchTerm, results, searchKey, error } = this.state;
+    const page = results && results[searchKey] && results[searchKey].page;
     const list =
       (results && results[searchKey] && results[searchKey].hits) || [];
+
+    if (error) {
+      return <p>Something went wrong.</p>;
+    }
     return (
       <div
         css={css`

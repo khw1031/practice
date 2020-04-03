@@ -1,4 +1,4 @@
-import React, { FormEvent, ChangeEvent } from "react";
+import React, { FormEvent, ChangeEvent, useRef, useEffect } from "react";
 
 interface SearchProps {
   value: string;
@@ -8,9 +8,13 @@ interface SearchProps {
 }
 
 function Search({ value, onChange, onSubmit, children }: SearchProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus();
+  });
   return (
     <form onSubmit={onSubmit}>
-      <input type="text" value={value} onChange={onChange} />
+      <input type="text" value={value} ref={inputRef} onChange={onChange} />
       <button type="submit">{children}</button>
     </form>
   );

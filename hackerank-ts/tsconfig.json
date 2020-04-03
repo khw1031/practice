@@ -13,6 +13,7 @@
     "sourceMap": true,
     "jsx": "react",
     "strict": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     // Linter Checks
