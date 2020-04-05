@@ -4,7 +4,8 @@ import { css, Global } from "@emotion/core";
 import { globalStyles } from "./global-style";
 import { Table } from "./components/table";
 import { Search } from "./components/search";
-import { Button } from "./components/button";
+import { Button, ButtonProps } from "./components/button";
+import { withLoading } from "./components/loading";
 
 export type HitType = {
   title: string;
@@ -30,39 +31,38 @@ type AppState = {
   searchKey: string;
   searchTerm: string;
   error: Error | null;
+  isLoading: boolean;
 };
+
+const ButtonWithLoading = withLoading<ButtonProps>(Button);
 
 class App extends Component<{}, AppState> {
   // https://stackoverflow.com/questions/51305171/typescript-and-react-setting-initial-state-with-empty-typed-array
-  _isMounted = false;
   state: Readonly<AppState> = {
     results: null,
     searchKey: "",
     searchTerm: "redux",
     error: null,
+    isLoading: false,
   };
 
   componentDidMount() {
-    this._isMounted = true;
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopstories(searchTerm);
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   needsToSearchTopStories = (searchTerm: string) =>
     !this.state.results![searchTerm];
 
   fetchSearchTopstories = (searchTerm: string, page: number = 0): void => {
+    this.setState({ isLoading: true });
     fetch(
-      `https://hn.algolia.com/api/v1/search?query=${searchTerm}&page=${page}&hitsPerPage=100`
+      `https://hn.algolia.com/api/v1/search?query=${searchTerm}&page=${page}&hitsPerPage=20`
     )
       .then(response => response.json())
-      .then(result => this._isMounted && this.setSearchTopstories(result))
-      .catch(error => this._isMounted && this.setState({ error }));
+      .then(result => this.setSearchTopstories(result))
+      .catch(error => this.setState({ error }));
   };
 
   /** dismiss */
@@ -103,6 +103,7 @@ class App extends Component<{}, AppState> {
         ...results,
         [searchKey]: { hits: [...oldHits, ...hits], page },
       },
+      isLoading: false,
     });
   };
 
@@ -117,7 +118,7 @@ class App extends Component<{}, AppState> {
   };
 
   render() {
-    const { searchTerm, results, searchKey, error } = this.state;
+    const { searchTerm, results, searchKey, error, isLoading } = this.state;
     const page = results && results[searchKey] && results[searchKey].page;
     const list =
       (results && results[searchKey] && results[searchKey].hits) || [];
@@ -145,9 +146,13 @@ class App extends Component<{}, AppState> {
         </div>
         <Table list={list} onDismiss={this.onDismiss} />
         <div css={styles.interactions}>
-          <Button data-page={page} onClick={this.fetchMore}>
+          <ButtonWithLoading
+            isLoading={isLoading}
+            data-page={page}
+            onClick={this.fetchMore}
+          >
             더보기
-          </Button>
+          </ButtonWithLoading>
         </div>
       </div>
     );

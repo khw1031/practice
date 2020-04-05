@@ -11,7 +11,7 @@ function Search({ value, onChange, onSubmit, children }: SearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();
-  });
+  }, []);
   return (
     <form onSubmit={onSubmit}>
       <input type="text" value={value} ref={inputRef} onChange={onChange} />

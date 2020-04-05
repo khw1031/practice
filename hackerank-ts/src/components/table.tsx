@@ -8,6 +8,7 @@ interface TableProps<T> {
   onDismiss: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
+
 function Table({ list, onDismiss }: TableProps<HitType[]>) {
   return (
     <div
@@ -72,5 +73,7 @@ function Table({ list, onDismiss }: TableProps<HitType[]>) {
     </div>
   );
 }
+
+
 
 export { Table };
