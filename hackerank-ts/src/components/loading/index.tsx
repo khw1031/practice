@@ -4,9 +4,9 @@ function Loading() {
   return <div>Loading...</div>;
 }
 
-interface WithLoadingType {
+type WithLoadingType = {
   isLoading?: boolean;
-}
+};
 
 function withLoading<T>(Component: React.ComponentType<T>) {
   // return class extends React.Component<T & WithLoadingType> {
@@ -15,8 +15,9 @@ function withLoading<T>(Component: React.ComponentType<T>) {
   //     return isLoading ? <Loading /> : <Component {...this.props} />;
   //   }
   // };
-  return (props: T & WithLoadingType) =>
-    props.isLoading ? <Loading /> : <Component {...props} />;
+  return (props: T & WithLoadingType) => {
+    return props.isLoading ? <Loading /> : <Component {...props} />;
+  };
 }
 
 export { Loading, withLoading };

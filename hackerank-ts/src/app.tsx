@@ -1,11 +1,15 @@
 import { hot } from "react-hot-loader/root";
 import React, { MouseEvent, ChangeEvent, FormEvent, Component } from "react";
 import { css, Global } from "@emotion/core";
+import { sortBy } from "lodash";
+
 import { globalStyles } from "./global-style";
 import { Table } from "./components/table";
 import { Search } from "./components/search";
 import { Button, ButtonProps } from "./components/button";
 import { withLoading } from "./components/loading";
+
+// import store from "./store";
 
 export type HitType = {
   title: string;
@@ -32,6 +36,19 @@ type AppState = {
   searchTerm: string;
   error: Error | null;
   isLoading: boolean;
+  sortKey: string;
+};
+
+type SortType = {
+  [key: string]: (list: HitType[]) => HitType[];
+};
+
+export const SORTS: SortType = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, "title"),
+  AUTHOR: list => sortBy(list, "author"),
+  COMMENTS: list => sortBy(list, "num_comments").reverse(),
+  POINTS: list => sortBy(list, "points").reverse(),
 };
 
 const ButtonWithLoading = withLoading<ButtonProps>(Button);
@@ -44,6 +61,7 @@ class App extends Component<{}, AppState> {
     searchTerm: "redux",
     error: null,
     isLoading: false,
+    sortKey: "NONE",
   };
 
   componentDidMount() {
@@ -51,6 +69,8 @@ class App extends Component<{}, AppState> {
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopstories(searchTerm);
   }
+
+  onSort = (sortKey: string) => this.setState({ sortKey });
 
   needsToSearchTopStories = (searchTerm: string) =>
     !this.state.results![searchTerm];
@@ -118,7 +138,14 @@ class App extends Component<{}, AppState> {
   };
 
   render() {
-    const { searchTerm, results, searchKey, error, isLoading } = this.state;
+    const {
+      searchTerm,
+      results,
+      searchKey,
+      error,
+      isLoading,
+      sortKey,
+    } = this.state;
     const page = results && results[searchKey] && results[searchKey].page;
     const list =
       (results && results[searchKey] && results[searchKey].hits) || [];
@@ -144,7 +171,12 @@ class App extends Component<{}, AppState> {
             </Search>
           </div>
         </div>
-        <Table list={list} onDismiss={this.onDismiss} />
+        <Table
+          sortKey={sortKey}
+          list={list}
+          onSort={this.onSort}
+          onDismiss={this.onDismiss}
+        />
         <div css={styles.interactions}>
           <ButtonWithLoading
             isLoading={isLoading}

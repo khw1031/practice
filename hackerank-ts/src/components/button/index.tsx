@@ -1,17 +1,13 @@
-import React, { MouseEvent, ButtonHTMLAttributes } from "react";
+import React, { ButtonHTMLAttributes } from "react";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  isLoading?: boolean;
 }
 
-function Button({
-  onClick,
-  children,
-  ...props
-}: React.PropsWithChildren<ButtonProps>) {
+function Button({ isLoading, ...props }: ButtonProps) {
   return (
-    <button onClick={onClick} type="button" {...props}>
-      {children}
+    <button type="button" {...props}>
+      {props.children}
     </button>
   );
 }

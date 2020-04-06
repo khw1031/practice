@@ -1,22 +1,24 @@
 import React, { MouseEvent } from "react";
 import { css } from "@emotion/core";
-import { HitType } from "src/app";
+import { HitType, SORTS } from "../app";
 import { Button } from "./button";
 
 interface TableProps<T> {
   list: T;
+  sortKey: string;
+  onSort: (sortKey: string) => void;
   onDismiss: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 
-function Table({ list, onDismiss }: TableProps<HitType[]>) {
+function Table({ sortKey, list, onDismiss }: TableProps<HitType[]>) {
   return (
     <div
       css={css`
         margin: 20px 0;
       `}
     >
-      {list.map(({ objectID, url, title, author, num_comments, points }) => (
+      {SORTS[sortKey](list).map(({ objectID, url, title, author, num_comments, points }) => (
         <div
           key={objectID}
           css={css`
