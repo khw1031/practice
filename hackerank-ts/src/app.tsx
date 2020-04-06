@@ -37,6 +37,7 @@ type AppState = {
   error: Error | null;
   isLoading: boolean;
   sortKey: string;
+  isSortReverse: boolean;
 };
 
 type SortType = {
@@ -62,6 +63,7 @@ class App extends Component<{}, AppState> {
     error: null,
     isLoading: false,
     sortKey: "NONE",
+    isSortReverse: false,
   };
 
   componentDidMount() {
@@ -70,7 +72,11 @@ class App extends Component<{}, AppState> {
     this.fetchSearchTopstories(searchTerm);
   }
 
-  onSort = (sortKey: string) => this.setState({ sortKey });
+  onSort = (sortKey: string) => {
+    const isSortReverse =
+      this.state.sortKey === sortKey && !this.state.isSortReverse;
+    this.setState({ sortKey, isSortReverse });
+  };
 
   needsToSearchTopStories = (searchTerm: string) =>
     !this.state.results![searchTerm];
@@ -145,6 +151,7 @@ class App extends Component<{}, AppState> {
       error,
       isLoading,
       sortKey,
+      isSortReverse,
     } = this.state;
     const page = results && results[searchKey] && results[searchKey].page;
     const list =
@@ -173,6 +180,7 @@ class App extends Component<{}, AppState> {
         </div>
         <Table
           sortKey={sortKey}
+          isSortReverse={isSortReverse}
           list={list}
           onSort={this.onSort}
           onDismiss={this.onDismiss}
