@@ -1,7 +1,6 @@
 import { hot } from "react-hot-loader/root";
 import React, { MouseEvent, ChangeEvent, FormEvent, Component } from "react";
 import { css, Global } from "@emotion/core";
-import { sortBy } from "lodash";
 
 import { globalStyles } from "./global-style";
 import { Table } from "./components/table";
@@ -36,23 +35,24 @@ type AppState = {
   searchTerm: string;
   error: Error | null;
   isLoading: boolean;
-  sortKey: string;
-  isSortReverse: boolean;
-};
-
-type SortType = {
-  [key: string]: (list: HitType[]) => HitType[];
-};
-
-export const SORTS: SortType = {
-  NONE: list => list,
-  TITLE: list => sortBy(list, "title"),
-  AUTHOR: list => sortBy(list, "author"),
-  COMMENTS: list => sortBy(list, "num_comments").reverse(),
-  POINTS: list => sortBy(list, "points").reverse(),
 };
 
 const ButtonWithLoading = withLoading<ButtonProps>(Button);
+
+const setSearchTopstories = ({ hits, page }: ResultType) => (
+  prevState: AppState
+) => {
+  const { searchKey, results } = prevState;
+
+  const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
+  return {
+    results: {
+      ...results,
+      [searchKey]: { hits: [...oldHits, ...hits], page },
+    },
+    isLoading: false,
+  };
+};
 
 class App extends Component<{}, AppState> {
   // https://stackoverflow.com/questions/51305171/typescript-and-react-setting-initial-state-with-empty-typed-array
@@ -62,8 +62,6 @@ class App extends Component<{}, AppState> {
     searchTerm: "redux",
     error: null,
     isLoading: false,
-    sortKey: "NONE",
-    isSortReverse: false,
   };
 
   componentDidMount() {
@@ -71,12 +69,6 @@ class App extends Component<{}, AppState> {
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopstories(searchTerm);
   }
-
-  onSort = (sortKey: string) => {
-    const isSortReverse =
-      this.state.sortKey === sortKey && !this.state.isSortReverse;
-    this.setState({ sortKey, isSortReverse });
-  };
 
   needsToSearchTopStories = (searchTerm: string) =>
     !this.state.results![searchTerm];
@@ -87,7 +79,7 @@ class App extends Component<{}, AppState> {
       `https://hn.algolia.com/api/v1/search?query=${searchTerm}&page=${page}&hitsPerPage=20`
     )
       .then(response => response.json())
-      .then(result => this.setSearchTopstories(result))
+      .then(result => this.setState(setSearchTopstories(result)))
       .catch(error => this.setState({ error }));
   };
 
@@ -118,21 +110,6 @@ class App extends Component<{}, AppState> {
     }
   };
 
-  setSearchTopstories = (result: ResultType) => {
-    const { hits, page } = result;
-    const { searchKey, results } = this.state;
-
-    const oldHits =
-      results && results[searchKey] ? results[searchKey].hits : [];
-    this.setState({
-      results: {
-        ...results,
-        [searchKey]: { hits: [...oldHits, ...hits], page },
-      },
-      isLoading: false,
-    });
-  };
-
   /** fetch more */
   fetchMore = (e: MouseEvent<HTMLButtonElement>) => {
     const { searchKey } = this.state;
@@ -144,15 +121,7 @@ class App extends Component<{}, AppState> {
   };
 
   render() {
-    const {
-      searchTerm,
-      results,
-      searchKey,
-      error,
-      isLoading,
-      sortKey,
-      isSortReverse,
-    } = this.state;
+    const { searchTerm, results, searchKey, error, isLoading } = this.state;
     const page = results && results[searchKey] && results[searchKey].page;
     const list =
       (results && results[searchKey] && results[searchKey].hits) || [];
@@ -178,13 +147,7 @@ class App extends Component<{}, AppState> {
             </Search>
           </div>
         </div>
-        <Table
-          sortKey={sortKey}
-          isSortReverse={isSortReverse}
-          list={list}
-          onSort={this.onSort}
-          onDismiss={this.onDismiss}
-        />
+        <Table list={list} onDismiss={this.onDismiss} />
         <div css={styles.interactions}>
           <ButtonWithLoading
             isLoading={isLoading}

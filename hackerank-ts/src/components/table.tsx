@@ -1,24 +1,37 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useState } from "react";
+import { sortBy } from "lodash";
 import { css } from "@emotion/core";
-import { HitType, SORTS } from "../app";
+import { HitType } from "../app";
 import { Button } from "./button";
 import { Sort } from "./sort";
 
 interface TableProps<T> {
   list: T;
-  sortKey: string;
-  isSortReverse: boolean;
-  onSort: (sortKey: string) => void;
   onDismiss: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
-function Table({
-  sortKey,
-  isSortReverse,
-  onSort,
-  list,
-  onDismiss,
-}: TableProps<HitType[]>) {
+type SortType = {
+  [key: string]: (list: HitType[]) => HitType[];
+};
+
+const SORTS: SortType = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, "title"),
+  AUTHOR: list => sortBy(list, "author"),
+  COMMENTS: list => sortBy(list, "num_comments").reverse(),
+  POINTS: list => sortBy(list, "points").reverse(),
+};
+
+function Table({ list, onDismiss }: TableProps<HitType[]>) {
+  const [sortKey, setSortKey] = useState<Readonly<string>>("NONE");
+  const [isSortReverse, setIsSortReverse] = useState<Readonly<boolean>>(false);
+
+  const onSort = (currentSortKey: string) => {
+    const isReverse = sortKey === currentSortKey && !isSortReverse;
+    setSortKey(currentSortKey);
+    setIsSortReverse(isReverse);
+  };
+
   const sortedList = SORTS[sortKey](list);
   const reversibleSortedList = isSortReverse
     ? sortedList.reverse()
@@ -113,7 +126,9 @@ function Table({
             `}
           >
             <span>
-              <a href={url}>{title}</a>
+              <a target="_blank" href={url}>
+                {title}
+              </a>
             </span>
             <span>{author}</span>
             <span>{num_comments}</span>
