@@ -7,6 +7,7 @@ import { Table } from "./components/table";
 import { Search } from "./components/search";
 import { Button, ButtonProps } from "./components/button";
 import { withLoading } from "./components/loading";
+import DataProvider from "./components/data-provider";
 
 // import store from "./store";
 
@@ -156,6 +157,7 @@ class App extends Component<{}, AppState> {
           >
             더보기
           </ButtonWithLoading>
+          <DataProvider render={data => <p>{data} is here!</p>} />
         </div>
       </div>
     );
