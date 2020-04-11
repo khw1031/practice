@@ -8,6 +8,7 @@ import { Search } from "./components/search";
 import { Button, ButtonProps } from "./components/button";
 import { withLoading } from "./components/loading";
 import DataProvider from "./components/data-provider";
+import { Switcher } from "./components/switcher";
 
 // import store from "./store";
 
@@ -158,6 +159,7 @@ class App extends Component<{}, AppState> {
             더보기
           </ButtonWithLoading>
           <DataProvider render={data => <p>{data} is here!</p>} />
+          <Switcher />
         </div>
       </div>
     );
