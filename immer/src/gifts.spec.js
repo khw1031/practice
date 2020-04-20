@@ -1,4 +1,4 @@
-import { addGift, toggleReservation } from "./gifts";
+import { addGift, toggleReservation, addBook, getBookDetails } from "./gifts";
 
 const initialState = {
   users: [
@@ -55,6 +55,18 @@ describe("Reserving an unreserved gift", () => {
   it("didn't modify the original state", () => {
     expect(initialState.gifts[1].reservedBy).toBe(undefined);
   });
+
+  it("does structurally share unchanged parts of the state tree", () => {
+    expect(nextState).not.toBe(initialState);
+    expect(nextState.gifts[1]).not.toBe(initialState.gifts[1]);
+    expect(nextState.gifts[0]).toBe(initialState.gifts[0]);
+  });
+
+  it("can't accidentally modify the produced state", () => {
+    expect(() => {
+      nextState.gifts[1].reservedBy = undefined;
+    }).toThrow();
+  });
 });
 
 describe("Reserving an already reserved gift", () => {
@@ -62,5 +74,19 @@ describe("Reserving an already reserved gift", () => {
 
   it("preserves stored reservedBy", () => {
     expect(nextState.gifts[0].reservedBy).toBe(2);
+  });
+
+  it("no new gift should be created", () => {
+    expect(nextState.gifts[0]).toEqual(initialState.gifts[0]);
+    expect(nextState.gifts[0]).toBe(initialState.gifts[0]);
+    expect(nextState).toBe(initialState);
+  });
+});
+
+describe("Can add book async", () => {
+  it("Can add math book", async () => {
+    const book = await getBookDetails("0201558025");
+    const nextState = addBook(initialState, book);
+    expect(nextState.gifts[2].description).toBe("Concrete mathematics");
   });
 });
