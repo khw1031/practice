@@ -1,19 +1,19 @@
-import { addGift, toggleReservation, addBook, getBookDetails } from "./gifts";
+import { giftReducer, addBook, getBookDetails } from "./gifts";
 
 const initialState = {
   users: [
     {
       id: 1,
-      name: "Test user",
+      name: "Test user"
     },
     {
       id: 2,
-      name: "Someone else",
-    },
+      name: "Someone else"
+    }
   ],
   currentUser: {
     id: 1,
-    name: "Test user",
+    name: "Test user"
   },
   gifts: [
     {
@@ -21,20 +21,25 @@ const initialState = {
       description: "Immer license",
       image:
         "https://raw.githubusercontent.com/immerjs/immer/master/images/immer-logo.png",
-      reservedBy: 2,
+      reservedBy: 2
     },
     {
       id: "egghead_subscription",
       description: "Egghead.io subscription",
       image:
         "https://pbs.twimg.com/profile_images/735242324293210112/H8YfgQHP_400x400.jpg",
-      reservedBy: undefined,
-    },
-  ],
+      reservedBy: undefined
+    }
+  ]
 };
 
 describe("Reserving an unreserved gift", () => {
-  const nextState = addGift(initialState, "mug", "Coffee mug", "");
+  const nextState = giftReducer(initialState, {
+    type: "ADD_GIFT",
+    id: "mug",
+    description: "Coffee mug",
+    image: ""
+  });
 
   it("added a gift to the collection", () => {
     expect(nextState.gifts.length).toBe(3);
@@ -46,7 +51,10 @@ describe("Reserving an unreserved gift", () => {
 });
 
 describe("Reserving an unreserved gift", () => {
-  const nextState = toggleReservation(initialState, "egghead_subscription");
+  const nextState = giftReducer(initialState, {
+    type: "TOGGLE_RESERVATION",
+    id: "egghead_subscription"
+  });
 
   it("correctly stores reservedBy", () => {
     expect(nextState.gifts[1].reservedBy).toBe(1);
@@ -70,7 +78,10 @@ describe("Reserving an unreserved gift", () => {
 });
 
 describe("Reserving an already reserved gift", () => {
-  const nextState = toggleReservation(initialState, "immer_license");
+  const nextState = giftReducer(initialState, {
+    type: "TOGGLE_RESERVATION",
+    id: "immer_license"
+  });
 
   it("preserves stored reservedBy", () => {
     expect(nextState.gifts[0].reservedBy).toBe(2);
@@ -86,7 +97,25 @@ describe("Reserving an already reserved gift", () => {
 describe("Can add book async", () => {
   it("Can add math book", async () => {
     const book = await getBookDetails("0201558025");
-    const nextState = addBook(initialState, book);
+    const nextState = giftReducer(initialState, {
+      type: "ADD_BOOK",
+      book
+    });
     expect(nextState.gifts[2].description).toBe("Concrete mathematics");
+  });
+  it("Can add two books in parallel", async () => {
+    const promise1 = getBookDetails("0201558025");
+    const promise2 = getBookDetails("9781598560169");
+    const addBook1 = {
+      type: "ADD_BOOK",
+      book: await promise1
+    };
+    const addBook2 = {
+      type: "ADD_BOOK",
+      book: await promise2
+    };
+    // const nextState = [addBook1, addBook2].reduce((state, action) => giftReducer(state, action), initialState);
+    const nextState = [addBook1, addBook2].reduce(giftReducer, initialState);
+    expect(nextState.gifts.length).toBe(4);
   });
 });

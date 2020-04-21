@@ -1,9 +1,9 @@
-import React, { useCallback, memo } from "react";
+import React, { useReducer, useCallback, memo } from "react";
 import ReactDOM from "react-dom";
 import { original } from "immer";
 import { useImmer } from "use-immer";
 import { v4 as uuidv4 } from "uuid";
-import { getInitialState } from "./gifts";
+import { getInitialState, getBookDetails, giftReducer } from "./gifts";
 
 import "./misc/index.css";
 
@@ -32,39 +32,35 @@ const Gift = memo(function Gift({ gift, users, currentUser, onReserve }) {
 });
 
 function GiftLists() {
-  const [state, updateState] = useImmer(getInitialState());
+  const [state, dispatch] = useReducer(giftReducer, getInitialState());
   const { users, gifts, currentUser } = state;
 
   const handleAdd = () => {
     const description = prompt("Gift to Add");
     if (description) {
-      updateState(
-        draft =>
-          void draft.gifts.push({
-            id: uuidv4(),
-            description,
-            image: "https://picsum.photos/200?q=" + Math.random(),
-            reservedBy: undefined,
-          })
-      );
+      dispatch({
+        type: "ADD_GIFT",
+        id: uuidv4(),
+        description,
+        image: "https://picsum.photos/200?q=" + Math.random()
+      });
     }
   };
 
-  const handleReset = () => {
-    updateState(_draft => getInitialState());
-  };
+  const handleReset = () => dispatch({ type: "RESET" });
 
-  const handleReserve = useCallback(id => {
-    updateState(draft => {
-      const gift = draft.gifts.find(gift => gift.id === id);
-      gift.reservedBy =
-        gift.reservedBy === undefined
-          ? original(draft.currentUser).id
-          : gift.reservedBy === original(draft.currentUser).id
-          ? undefined
-          : gift.reservedBy;
-    });
-  }, []);
+  const handleReserve = useCallback(
+    id => dispatch({ type: "TOGGLE_RESERVATION", id }),
+    []
+  );
+
+  const handleAddBook = async () => {
+    const isbn = prompt("Enter ISBN number", "0201558025");
+    if (isbn) {
+      const book = await getBookDetails(isbn);
+      dispatch({ type: "ADD_BOOK", book });
+    }
+  };
 
   return (
     <div className="app">
@@ -77,6 +73,9 @@ function GiftLists() {
         </button>
         <button type="button" onClick={handleReset}>
           Reset
+        </button>
+        <button type="button" onClick={handleAddBook}>
+          AddBook
         </button>
       </div>
       <div className="gifts">
