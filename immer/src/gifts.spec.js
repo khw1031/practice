@@ -1,4 +1,11 @@
-import { giftReducer, addBook, getBookDetails } from "./gifts";
+import {
+  giftReducer,
+  getBookDetails,
+  patchGeneratingGiftsReducer
+} from "./gifts";
+import { enablePatches } from "immer";
+
+enablePatches();
 
 const initialState = {
   users: [
@@ -117,5 +124,27 @@ describe("Can add book async", () => {
     // const nextState = [addBook1, addBook2].reduce((state, action) => giftReducer(state, action), initialState);
     const nextState = [addBook1, addBook2].reduce(giftReducer, initialState);
     expect(nextState.gifts.length).toBe(4);
+  });
+});
+
+describe("Reserving an unreserved gift with patches", () => {
+  const [nextState, patches] = patchGeneratingGiftsReducer(initialState, {
+    type: "TOGGLE_RESERVATION",
+    id: "egghead_subscription"
+  });
+
+  it("correctly stores reserveBy", () => {
+    expect(nextState.gifts[1].reservedBy).toBe(1);
+  });
+
+
+  it("generates the correct patches", () => {
+    expect(patches).toEqual([
+      {
+        op: "replace",
+        path: ["gifts", 1, "reservedBy"],
+        value: 1,
+      }
+    ]);
   });
 });

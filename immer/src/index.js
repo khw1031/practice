@@ -1,11 +1,16 @@
-import React, { useReducer, useCallback, memo } from "react";
+import React, { useState, useCallback, memo } from "react";
 import ReactDOM from "react-dom";
-import { original } from "immer";
-import { useImmer } from "use-immer";
 import { v4 as uuidv4 } from "uuid";
-import { getInitialState, getBookDetails, giftReducer } from "./gifts";
+import {
+  getInitialState,
+  getBookDetails,
+  patchGeneratingGiftsReducer
+} from "./gifts";
+import { enablePatches } from "immer";
 
 import "./misc/index.css";
+
+enablePatches();
 
 const Gift = memo(function Gift({ gift, users, currentUser, onReserve }) {
   return (
@@ -32,8 +37,19 @@ const Gift = memo(function Gift({ gift, users, currentUser, onReserve }) {
 });
 
 function GiftLists() {
-  const [state, dispatch] = useReducer(giftReducer, getInitialState());
+  const [state, setState] = useState(getInitialState());
   const { users, gifts, currentUser } = state;
+
+  const dispatch = useCallback(action => {
+    setState(currentState => {
+      const [nextState, patches] = patchGeneratingGiftsReducer(
+        currentState,
+        action
+      );
+      console.log(patches);
+      return nextState;
+    });
+  }, []);
 
   const handleAdd = () => {
     const description = prompt("Gift to Add");

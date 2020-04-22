@@ -1,4 +1,4 @@
-import produce, { original } from "immer";
+import produce, { original, produceWithPatches } from "immer";
 import { allUsers, getCurrentUser } from "./misc/users";
 import defaultGifts from "./misc/gifts.json";
 
@@ -145,7 +145,8 @@ export const addBook = produce((draft, book) => {
 });
 
 // step5 - reducer
-export const giftReducer = produce((draft, action) => {
+
+const giftsRecipe = (draft, action) => {
   switch (action.type) {
     case "ADD_GIFT": {
       const { id, description, image } = action;
@@ -172,7 +173,7 @@ export const giftReducer = produce((draft, action) => {
     case "ADD_BOOK": {
       const { book } = action;
       draft.gifts.push({
-        id: book.isbn,
+        id: book.identifiers.isbn_10[0],
         description: book.title,
         image: book.cover.medium,
         reservedBy: undefined
@@ -183,4 +184,10 @@ export const giftReducer = produce((draft, action) => {
       return getInitialState();
     }
   }
-});
+};
+
+// (state, action) => state
+export const giftReducer = produce(giftsRecipe);
+
+// (state, action) => [state, patches, inversePatches]
+export const patchGeneratingGiftsReducer = produceWithPatches(giftsRecipe)
