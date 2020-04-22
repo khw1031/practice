@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   getInitialState,
   getBookDetails,
-  patchGeneratingGiftsReducer
+  patchGeneratingGiftsReducer,
 } from "./gifts";
 import { enablePatches } from "immer";
 
@@ -58,7 +58,7 @@ function GiftLists() {
         type: "ADD_GIFT",
         id: uuidv4(),
         description,
-        image: "https://picsum.photos/200?q=" + Math.random()
+        image: "https://picsum.photos/200?q=" + Math.random(),
       });
     }
   };
