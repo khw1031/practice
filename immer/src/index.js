@@ -9,6 +9,7 @@ import {
 import { enablePatches } from "immer";
 
 import "./misc/index.css";
+import { useSocket } from "./misc/useSocket";
 
 enablePatches();
 
@@ -46,10 +47,15 @@ function GiftLists() {
         currentState,
         action
       );
-      console.log(patches);
+      send(patches);
       return nextState;
     });
   }, []);
+
+  const send = useSocket("ws://localhost:5001", function onMessage(patches) {
+    // we received some patches;
+    console.dir(patches);
+  });
 
   const handleAdd = () => {
     const description = prompt("Gift to Add");

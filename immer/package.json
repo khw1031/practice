@@ -8,12 +8,14 @@
     "test": "jest --watch"
   },
   "dependencies": {
+    "esm": "^3.2.25",
     "immer": "^6.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "use-immer": "^0.4.0",
     "uuid": "^7.0.3",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
